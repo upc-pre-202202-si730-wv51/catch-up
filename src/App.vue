@@ -1,14 +1,41 @@
 <template>
-
+  <div class="w-full">
+    <div>
+      <pv-menubar class="sticky bg-primary">
+        <template #start>
+          <pv-button label="CatchUp"
+                     icon="pi pi-bars"
+                     @click="toggleSidebar"/>
+          <side-menu v-model:visible="sidebarVisible"
+                     v-on:source-selected="setSource"></side-menu>
+        </template>
+        <template #end>
+          <language-switcher/>
+        </template>
+      </pv-menubar>
+    </div>
+    <div>
+      <unavailable-content v-if="errors" :errors="errors"></unavailable-content>
+      <main-content v-else :articles="articles"></main-content>
+    </div>
+    <footer-content/>
+  </div>
 </template>
 
 <script>
-import {NewsApiService} from "@/news/services/news-api.service";
+import { NewsApiService } from "@/news/services/news-api.service";
+import SideMenu from "@/components/side-menu.component.vue";
+import LanguageSwitcher from "@/components/language-switcher.component.vue";
+import UnavailableContent from "@/components/unavailable-content.component.vue";
+import MainContent from "@/components/main-content.component.vue";
+import FooterContent from "@/components/footer-content.component.vue";
 
 export default {
   name: 'App',
+  components: {FooterContent, MainContent, UnavailableContent, LanguageSwitcher, SideMenu},
   data() {
     return {
+      sidebarVisible: false,
       articles: [],
       errors: [],
       newsApi: new NewsApiService()
@@ -52,7 +79,12 @@ export default {
     // On Source selected
 
     setSource(source) {
-      this.getArticlesForSourceWithUrl(source)
+      this.getArticlesForSourceWithUrl(source);
+      this.toggleSidebar();
+    },
+
+    toggleSidebar() {
+      this.sidebarVisible = !this.sidebarVisible;
     }
   }
 }
