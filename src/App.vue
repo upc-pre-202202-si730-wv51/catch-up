@@ -37,7 +37,7 @@ export default {
     return {
       sidebarVisible: false,
       articles: [],
-      errors: [],
+      errors: null,
       newsApi: new NewsApiService()
     }
   },
@@ -68,7 +68,9 @@ export default {
       this.newsApi.getArticlesForSource(source.id)
           .then(response => {
             this.articles = response.data.articles;
-            this.articles.map(article => article.source.url = source.url);
+            this.articles.map(article => {
+              article.source.url = source.url;
+              article.source.urlToLogo = source.urlToLogo; });
             console.log(response.data);
           })
           .catch(e => {
